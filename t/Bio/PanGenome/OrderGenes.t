@@ -22,5 +22,16 @@ ok(my $obj = Bio::PanGenome::OrderGenes->new(
   gff_files   => ['t/data/query_1.gff','t/data/query_2.gff','t/data/query_3.gff'],
 ),'Initialise order genes object');
 
+ok( $obj->groups_to_contigs, 'create groups to contigs okay');
+
+my %target = ('a' => 1, 'b' => 1, 'c' => 2, 'd' => 1 );
+my %query = ('a' => 1, 'c' => 1,'f' => 1);
+is( $obj->_number_of_files_in_common(\%target,\%query), 2, 'count number of files in common');
+
+is_deeply($obj->_freq_of_files_in_array_of_groups(['group_1','group_5']), {
+          't/data/query_1.fa' => 1,
+          't/data/query_3.fa' => 2,
+          't/data/query_2.fa' => 1
+        },'correctly count the number of files in groups');
 
 done_testing();

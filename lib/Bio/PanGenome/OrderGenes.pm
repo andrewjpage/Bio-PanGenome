@@ -186,17 +186,109 @@ sub _reorder_connected_components
 
      push(@paths_and_weights, { 
        path           => \@reordered_dfs_groups,
-       average_weight => $average_weight 
+       average_weight => $average_weight,
+       freq_of_files  => $self->_freq_of_files_in_array_of_groups(\@reordered_dfs_groups)
      });
      
    }
-   
-   my @ordered_paths_and_weights =  sort { $a->{average_weight} <=> $b->{average_weight} } @paths_and_weights;
-   
-   @ordered_graph_groups = map { $_->{path}} @ordered_paths_and_weights;
-    
-   return \@ordered_graph_groups;
+
+   return $self->_sort_equal_weights_by_file_freq(\@paths_and_weights);
 }
+
+sub _sort_equal_weights_by_file_freq
+{
+  my($self, $paths_and_weights) = @_;
+  
+  my %weightings_graph_order_hash;
+  my @ordered_paths_and_weights;
+
+  my $counter =1;
+  for my $graph_order_hash (sort { int($a->{average_weight}) <=> int($b->{average_weight}) }  @{$paths_and_weights})
+  {
+    $graph_order_hash->{name} = $counter;
+    push(@{$weightings_graph_order_hash{ int($graph_order_hash->{average_weight}) }} , $graph_order_hash);
+  }
+  
+  for my $current_weight (sort {$a <=> $b} keys %weightings_graph_order_hash )
+  {
+    if(@{$weightings_graph_order_hash{$current_weight}} > 1)
+    {
+      my $graph = Graph->new(undirected => 1);
+      for my $graph_order_hash_target(@{$weightings_graph_order_hash{$current_weight}})
+      {
+        for my $graph_order_hash_query(@{$weightings_graph_order_hash{$current_weight}})
+        {
+          my $number_files_in_common = $self->_number_of_files_in_common($graph_order_hash_target->{freq_of_files},$graph_order_hash_query->{freq_of_files});
+          my @filenames_target = keys %{$graph_order_hash_target->{freq_of_files}};
+          
+          next if($number_files_in_common < @filenames_target * 0.9);
+          $graph->add_edge($graph_order_hash_target->{name}, $graph_order_hash_query->{name});
+        }
+      }
+      my @group_graphs = $graph->connected_components();
+      for my $current_graph (@group_graphs)
+      {
+         my $minimum_spanning_tree = $current_graph->minimum_spanning_tree;
+         my $dfs_obj = Graph::Traversal::DFS->new($minimum_spanning_tree);
+         my @reordered_dfs_groups = $dfs_obj->dfs;
+         
+         for my $group_graph_name (@reordered_dfs_groups)
+         {
+           for my $graph_order_hash_target(@{$weightings_graph_order_hash{$current_weight}})
+           {
+             if($graph_order_hash_target->{name} eq $group_graph_name )
+             {
+               push(@ordered_paths_and_weights, $graph_order_hash_target->{path});
+               last;
+             }
+           }
+         }
+      }
+    }
+    else
+    {
+      push(@ordered_paths_and_weights, $weightings_graph_order_hash{$current_weight}->[0]->{path});
+    }
+  }
+  return \@ordered_paths_and_weights;
+}
+
+sub _number_of_files_in_common
+{
+  my($self, $freq_target, $freq_query) = @_;
+
+  my $number_in_common = 0;
+  for my $file_name (keys %{$freq_target})
+  {
+    if($freq_query->{$file_name})
+    {
+      $number_in_common++;
+    }
+  }
+  
+  return $number_in_common;
+}
+
+sub _freq_of_files_in_array_of_groups
+{
+  my($self, $groups) = @_;
+  my %freq_of_files;
+  
+  for my $group (@{$groups})
+  {
+    next unless(defined($self->analyse_groups_obj->_groups_to_genes->{$group}));
+    my $genes = $self->analyse_groups_obj->_groups_to_genes->{$group};
+    next unless(defined($genes));
+    
+    for my $gene (@{$genes})
+    {
+      my $file = $self->analyse_groups_obj->_genes_to_file->{$gene};
+      $freq_of_files{$file}++;
+    }
+  }
+  return \%freq_of_files;
+}
+
 
 sub _build_groups_to_contigs
 {
