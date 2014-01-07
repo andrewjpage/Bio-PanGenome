@@ -189,9 +189,8 @@ sub _reorder_connected_components
        average_weight => $average_weight,
        freq_of_files  => $self->_freq_of_files_in_array_of_groups(\@reordered_dfs_groups)
      });
-     
-   }
 
+   }
    return $self->_sort_equal_weights_by_file_freq(\@paths_and_weights);
 }
 
@@ -207,6 +206,7 @@ sub _sort_equal_weights_by_file_freq
   {
     $graph_order_hash->{name} = $counter;
     push(@{$weightings_graph_order_hash{ int($graph_order_hash->{average_weight}) }} , $graph_order_hash);
+    $counter++;
   }
   
   for my $current_weight (sort {$a <=> $b} keys %weightings_graph_order_hash )
@@ -216,23 +216,21 @@ sub _sort_equal_weights_by_file_freq
       my $graph = Graph->new(undirected => 1);
       for my $graph_order_hash_target(@{$weightings_graph_order_hash{$current_weight}})
       {
+        $graph->add_edge($graph_order_hash_target->{name}, $graph_order_hash_target->{name});
+        
         for my $graph_order_hash_query(@{$weightings_graph_order_hash{$current_weight}})
         {
           my $number_files_in_common = $self->_number_of_files_in_common($graph_order_hash_target->{freq_of_files},$graph_order_hash_query->{freq_of_files});
           my @filenames_target = keys %{$graph_order_hash_target->{freq_of_files}};
           
-          next if($number_files_in_common < @filenames_target * 0.9);
+          next if($number_files_in_common < @filenames_target * 0.8);
           $graph->add_edge($graph_order_hash_target->{name}, $graph_order_hash_query->{name});
         }
       }
       my @group_graphs = $graph->connected_components();
       for my $current_graph (@group_graphs)
       {
-         my $minimum_spanning_tree = $current_graph->minimum_spanning_tree;
-         my $dfs_obj = Graph::Traversal::DFS->new($minimum_spanning_tree);
-         my @reordered_dfs_groups = $dfs_obj->dfs;
-         
-         for my $group_graph_name (@reordered_dfs_groups)
+         for my $group_graph_name (@{$current_graph})
          {
            for my $graph_order_hash_target(@{$weightings_graph_order_hash{$current_weight}})
            {

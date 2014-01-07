@@ -1,0 +1,13 @@
+##gff-version 3
+##sequence-region hij|SC|contig000001 1 15000
+hij|SC|contig000002	Prodigal:2.60	CDS	3445	4170	.	-	0	ID=3_4;inference=ab initio prediction:Prodigal:2.60,similar to AA sequence:UniProtKB:P0C0I6;locus_tag=hij_00005;note=SPE H;product=superantigen-like protein,Staphylococcal/Streptococcal toxin%2C beta-grasp domain;protein_id=gnl|SC|hij_00005
+hij|SC|contig000002	Prodigal:2.60	CDS	4265	4990	.	-	0	ID=3_5;inference=ab initio prediction:Prodigal:2.60,similar to AA sequence:UniProtKB:P0C0I6;locus_tag=hij_00005;note=SPE H;product=superantigen-like protein,Staphylococcal/Streptococcal toxin%2C beta-grasp domain;protein_id=gnl|SC|hij_00005
+hij|SC|contig000002	Prodigal:2.60	CDS	5428	6429	.	+	0	ID=3_6;inference=ab initio prediction:Prodigal:2.60,similar to AA sequence:UniProtKB:P0C0I6;locus_tag=hij_00005;note=SPE H;product=superantigen-like protein,Staphylococcal/Streptococcal toxin%2C beta-grasp domain;protein_id=gnl|SC|hij_00005
+##FASTA
+>hij|SC|contig000002
+ACTGGCCGCCTAATAATAAAAACTCTAAAAGTTGTAATTTAAAATAGTTCTTTAAATTAT
+ATACCCACCACATTTGGTGGAGAACCAAAAATTAGCCGAAAAACATCATTTCTGAAGTTA
+TCGGCTAAAGTTATAAATTATATTTATTTGTACATGAACAAATAATTTACATTAATTTGT
+CATTTCTTCTTTTTCCCAATCGATTTTATATCTTTCTGAAGAACGATCTGTCCATTTATC
+TTTAGTATTGGTACCTTTCCAATTTGTTGAAGTCCAATGCAATTGGTAGTCATCACGAAC
+TCGTTCGTATATTACATCTATATTTGTTTGTTGTTTGGATGCTTTTCTATCCATAGTAAT
