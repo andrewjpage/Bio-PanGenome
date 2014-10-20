@@ -20,6 +20,7 @@ use Bio::PanGenome::Exceptions;
 use Bio::PanGenome::AnalyseGroups;
 use Bio::PanGenome::ContigsToGeneIDsFromGFF;
 use Graph;
+use Graph::Writer::Dot;
 
 has 'gff_files'           => ( is => 'ro', isa => 'ArrayRef',  required => 1 );
 has 'analyse_groups_obj'  => ( is => 'ro', isa => 'Bio::PanGenome::AnalyseGroups',  required => 1 );
@@ -136,6 +137,13 @@ sub _add_groups_to_graph
 
 }
 
+sub write_out_graph_in_dot_format
+{
+  my($self,$graph) = @_;
+  my $writer = Graph::Writer::Dot->new();
+  $writer->write_graph($graph, 'graph.dot');
+}
+
 
 sub _reorder_connected_components
 {
@@ -202,6 +210,7 @@ sub _build_groups_to_contigs
 {
   my($self) = @_;
   $self->_add_groups_to_graph;
+  $self->write_out_graph_in_dot_format($self->group_graphs);
 
   my %groups_to_contigs;
   my $counter = 1;
