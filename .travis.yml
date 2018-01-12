@@ -20,7 +20,7 @@ perl:
   - "5.26"
 env:
   - PARALLEL_VERSION=20160722
-  - PARALLEL_VERSION=20170822
+  - PARALLEL_VERSION=20171222
 install:
   - "source ./install_dependencies.sh"
 script: "ROARY_FULL_TESTS=1 dzil test"
