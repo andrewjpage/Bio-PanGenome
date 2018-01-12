@@ -38,7 +38,7 @@ FASTTREE_URL="http://microbesonline.org/fasttree/FastTree-${FASTTREE_VERSION}.c"
 
 MAFFT_VERSION="7.313"
 MAFFT_DOWNLOAD_FILENAME="mafft-${MAFFT_VERSION}-without-extensions-src.tgz"
-MAFFT_URL="http://mafft.cbrc.jp/alignment/software/${MAFFT_DOWNLOAD_FILENAME}"
+MAFFT_URL="https://mafft.cbrc.jp/alignment/software/${MAFFT_DOWNLOAD_FILENAME}"
 
 # Make an install location
 if [ ! -d 'build' ]; then
