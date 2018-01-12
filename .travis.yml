@@ -8,13 +8,14 @@ addons:
 cache:
   directories:
   - build/parallel-20160722
-  - build/parallel-20170822
+  - build/parallel-20171222
   - build/bedtools2
   - build/cd-hit-v4.6.8-2017-0621
   - build/prank-msa-master
-  - build/ncbi-blast-2.6.0+
+  - build/ncbi-blast-2.7.1+
   - build/mcl-14-137
   - build/fasttree
+  - build/mafft-7.313-without-extensions
 perl:
   - "5.14"
   - "5.26"
